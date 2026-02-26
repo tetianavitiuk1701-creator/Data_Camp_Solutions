@@ -1,0 +1,75 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+
+ROWS, COLS = 20, 20
+STEPS = 20
+
+initial_grid = np.random.randint(0, 2, (ROWS, COLS))
+
+print("Initial matrix (20x20):")
+print(initial_grid)
+
+
+
+def count_neighbors(grid, r, c):
+    rows, cols = grid.shape
+    count = 0
+
+    for i in range(r - 1, r + 2):
+        for j in range(c - 1, c + 2):
+            if i == r and j == c:
+                continue
+            if 0 <= i < rows and 0 <= j < cols:
+                count += grid[i][j]
+
+    return count
+
+
+
+def next_step(grid):
+    rows, cols = grid.shape
+    new_grid = np.zeros((rows, cols), dtype=int)
+
+    for r in range(rows):
+        for c in range(cols):
+            neighbors = count_neighbors(grid, r, c)
+
+            if grid[r][c] == 1:
+                if neighbors == 2 or neighbors == 3:
+                    new_grid[r][c] = 1
+                else:
+                    new_grid[r][c] = 0
+            else:
+                if neighbors == 3:
+                    new_grid[r][c] = 1
+
+    return new_grid
+
+
+
+grid = initial_grid.copy()
+
+for _ in range(STEPS):
+    grid = next_step(grid)
+
+print("\nMatrix after 20 steps:")
+print(grid)
+
+
+fig, ax = plt.subplots()
+img = ax.imshow(initial_grid, cmap='Greens')
+
+
+def update(frame):
+    global initial_grid
+    initial_grid = next_step(initial_grid)
+    img.set_data(initial_grid)
+    ax.set_title(f"Step {frame + 1}")
+    return [img]
+
+
+ani = animation.FuncAnimation(fig, update, frames=STEPS, interval=400)
+
+plt.show()

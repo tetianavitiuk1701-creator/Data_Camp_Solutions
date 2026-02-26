@@ -1,0 +1,28 @@
+p = [0.12, 0.27, 0.21, 0.96]
+
+prior = [0.25, 0.25, 0.25, 0.25]
+
+obs = ['H', 'H', 'H', 'T', 'H', 'T', 'H', 'H', 'H']
+
+probs = []
+post = prior[:]
+
+for o in obs:
+
+    next_p = sum(p[i] * post[i] for i in range(len(p)))
+    probs.append(round(next_p, 2))
+
+    if o == 'H':
+        likelihood = p
+    else:
+        likelihood = [1 - pi for pi in p]
+
+    unnorm = [likelihood[i] * post[i] for i in range(len(p))]
+    total = sum(unnorm)
+    post = [u / total for u in unnorm]
+
+print("Probabilities to nearest hundredth:")
+print(probs)
+
+print("\nFinal posterior probabilities:")
+print([round(x, 4) for x in post])

@@ -1,0 +1,5 @@
+Probabilities to nearest hundredth:
+[0.39, 0.67, 0.87, 0.94, 0.68, 0.86, 0.42, 0.65, 0.84]
+
+Final posterior probabilities:
+[0.0002, 0.0439, 0.0089, 0.947]

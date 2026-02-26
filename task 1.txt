@@ -1,0 +1,72 @@
+import matplotlib.pyplot as plt
+import random
+
+random_vals = [random.randint(0, 20) for _ in range(20)]
+print("Random values:", random_vals)
+
+
+def deepest_lake(heights):
+    n = len(heights)
+    max_depth = 0
+    best_i = best_j = -1
+
+    for i in range(n):
+        for j in range(i + 2, n):
+            left = heights[i]
+            right = heights[j]
+            wall = min(left, right)
+
+            inside = heights[i + 1:j]
+
+            # Перевірка що є внутрішні точки і вони нижчі за стіну
+            if inside and all(h < wall for h in inside):
+                depth = wall - min(inside)
+
+                if depth > max_depth:
+                    max_depth = depth
+                    best_i, best_j = i, j
+
+    return max_depth, best_i, best_j
+
+
+# Test on sample
+sample = [20, 6, 13, 3, 23, 14, 1, 8, 1, 8,
+          16, 21, 2, 17, 7, 5, 20, 17, 18, 10]
+
+depth, best_i, best_j = deepest_lake(sample)
+
+print("Deepest lake depth:", depth)
+
+x = list(range(len(sample)))
+plt.figure(figsize=(12, 5))
+plt.plot(x, sample, 'o-', linewidth=2, markersize=5, label='Heights')
+
+if depth > 0:
+    wall_height = min(sample[best_i], sample[best_j])
+    lake_x = list(range(best_i, best_j + 1))
+
+    water_level = [wall_height] * len(lake_x)
+
+    plt.fill_between(
+        lake_x,
+        sample[best_i:best_j + 1],
+        water_level,
+        alpha=0.5,
+        label=f'Deepest lake (depth={depth})'
+    )
+
+    plt.scatter(
+        [best_i, best_j],
+        [sample[best_i], sample[best_j]],
+        s=80,
+        zorder=5,
+        label='Lake boundaries'
+    )
+
+plt.title('Mountains and Deepest Lake')
+plt.xlabel('Index')
+plt.ylabel('Height')
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
